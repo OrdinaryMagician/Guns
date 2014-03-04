@@ -4,7 +4,8 @@
 --
 
 Guns.u is a small UT'99 mod highly inspired by the basic concept of
-shotguns.pk7: Bleeding makes guns drop, and those guns fire automatically.
+[shotguns.pk7](http://forum.zdoom.org/viewtopic.php?f=19&t=45225): Bleeding
+makes guns drop, and those guns fire automatically.
 
 Where shotguns.pk7 had shotguns (a spinoff, chainguns.pk7, had chainguns),
 Guns.u has ALL weapons in the game (except the translocator because it doesn't
