@@ -1,0 +1,46 @@
+Legend:
+- To do
+X Done
+P partial
+F Failed
+C Currently in progress
+
+Alpha:
+  X Start project
+  X Base classes
+    X Mutator
+    X Gun
+  X Gun dropping on hit/death
+  X Gun dropper physics
+  X Gun dropper behavior
+    X Chainsaw
+    X Impact Hammer
+    X Enforcer
+    X Biorifle
+    X Shock Rifle
+    X Pulsegun (Alt)
+    X Ripper
+    X Minigun
+    X Flak Cannon
+    X Rocket Launcher
+    X Sniper Rifle
+    X Redeemer
+    X Enhanced Shock Rifle
+  X Configuration
+  X Gun counter on HUD
+Beta:
+  - Physics improvements
+    - Sliding
+    - Knockback on ignite
+  - Other weapons
+    - Unreal I set
+    - UnSX common set
+    - SWWM common set
+  - Misc
+    - Pulsegun beam elasticity because why the heck not
+  - Gun probabilities in random mode
+  - Additional fire modes
+Gold:
+  - Mod menu
+  - Network compatibility
+  - Initiate Guns2 (ut2k4) and Guns3 (ut3)
