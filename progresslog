@@ -29,8 +29,10 @@ Alpha:
   X Configuration
   X Gun counter on HUD
 Beta:
-  - Physics improvements
-    - Sliding
+  C Physics improvements
+    X Allow damage/bouncing on ignite
+    X Align to ground inclination (cross hack)
+    - Sliding (more cross hack)
     - Knockback on ignite
   - Other weapons
     - Unreal I set

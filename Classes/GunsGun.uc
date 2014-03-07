@@ -34,12 +34,12 @@ class GunsGun extends Actor config(Guns);
 #exec MESH ORIGIN MESH=GunShock X=0 Y=0 Z=0 PITCH=0 YAW=64 ROLL=0
 #exec MESH SEQUENCE MESH=GunShock SEQ=All STARTFRAME=0 NUMFRAMES=1
 #exec MESHMAP SCALE MESHMAP=GunShock X=0.07 Y=0.07 Z=0.14
-// GunPulse (corrected: subtract 64 from yaw, was 0)
+// GunPulse (corrected)
 #exec MESH IMPORT MESH=GunPulse ANIVFILE=Models\GunPulse_a.3d DATAFILE=Models\GunPulse_d.3d X=0 Y=0 Z=0
-#exec MESH ORIGIN MESH=GunPulse X=0 Y=0 Z=0 PITCH=0 YAW=-64 ROLL=0
+#exec MESH ORIGIN MESH=GunPulse X=0 Y=0 Z=0 PITCH=0 YAW=64 ROLL=0
 #exec MESH SEQUENCE MESH=GunPulse SEQ=All STARTFRAME=0 NUMFRAMES=1
 #exec MESHMAP SCALE MESHMAP=GunPulse X=0.08 Y=0.08 Z=0.16
-// GunRip (corrected: subtract 64 from yaw, was 64)
+// GunRip (corrected)
 #exec MESH IMPORT MESH=GunRip ANIVFILE=Models\GunRip_a.3d DATAFILE=Models\GunRip_d.3d X=0 Y=0 Z=0
 #exec MESH ORIGIN MESH=GunRip X=0 Y=0 Z=0 PITCH=0 YAW=0 ROLL=0
 #exec MESH SEQUENCE MESH=GunRip SEQ=All STARTFRAME=0 NUMFRAMES=1
@@ -49,12 +49,12 @@ class GunsGun extends Actor config(Guns);
 #exec MESH ORIGIN MESH=GunMini X=0 Y=0 Z=0 PITCH=0 YAW=64 ROLL=0
 #exec MESH SEQUENCE MESH=GunMini SEQ=All STARTFRAME=0 NUMFRAMES=1
 #exec MESHMAP SCALE MESHMAP=GunMini X=0.1 Y=0.1 Z=0.2
-// GunFlak (corrected: invert yaw, was 64)
+// GunFlak (corrected)
 #exec MESH IMPORT MESH=GunFlak ANIVFILE=Models\GunFlak_a.3d DATAFILE=Models\GunFlak_d.3d X=0 Y=0 Z=0
 #exec MESH ORIGIN MESH=GunFlak X=0 Y=-540 Z=0 PITCH=0 YAW=-64 ROLL=0
 #exec MESH SEQUENCE MESH=GunFlak SEQ=All STARTFRAME=0 NUMFRAMES=1
 #exec MESHMAP SCALE MESHMAP=GunFlak X=0.07 Y=0.07 Z=0.14
-// GunRocket (corrected: invert yaw, was 64)
+// GunRocket (corrected)
 #exec MESH IMPORT MESH=GunRocket ANIVFILE=Models\GunRocket_a.3d DATAFILE=Models\GunRocket_d.3d X=0 Y=0 Z=0
 #exec MESH ORIGIN MESH=GunRocket X=0 Y=170 Z=0 PITCH=0 YAW=-64 ROLL=0
 #exec MESH SEQUENCE MESH=GunRocket SEQ=All STARTFRAME=0 NUMFRAMES=1
@@ -154,7 +154,8 @@ function SetType( int Gun )
 		SetCollisionSize(16.0,16.0);
 		Mass = 50.0;
 		Buoyancy = 45.0;
-		FireOffset = vect(55,0,0);
+		//FireOffset = vect(55,0,0);
+		FireOffset = vect(0,0,0);
 		Shots = ShotsImpact;
 		FiringSpeed = 1.0;
 	}
@@ -321,12 +322,14 @@ event Touch( Actor Other )
 			TouchEffect = False;
 		}
 	}
-	if ( Physics == PHYS_None )
-		return;
-	PlaySound(HitSound[Rand(3)],SLOT_Interact,0.5);
-	//Velocity += Other.Velocity*0.2;
 	if ( (Other == Owner) || (VSize(Velocity)<400) )
 		return;
+	SetPhysics(PHYS_Falling);
+	Velocity += Other.Velocity*0.2;
+	RotationRate.Pitch = FRand()*34000*(VSize(Velocity)/200);
+	RotationRate.Yaw = FRand()*42000*(VSize(Velocity)/200);
+	RotationRate.Roll = FRand()*56000*(VSize(Velocity)/200);
+	PlaySound(HitSound[Rand(3)],SLOT_Interact,0.5);
 	Other.TakeDamage((Mass*VSize(Velocity))/100,Instigator,Location,
 		Velocity*Mass,'Crushed');
 }
@@ -338,10 +341,10 @@ event Landed( Vector HitNormal )
 
 event HitWall( Vector HitNormal, Actor Wall )
 {
-	local Vector RealHitNormal;
-	local Rotator OldRot;
+	local Vector RealHitNormal,X,Y,Z;
+	local Rotator AlignRot;
 	RealHitNormal = HitNormal;
-	HitNormal = Normal(HitNormal+0.5*VRand());
+	HitNormal = Normal(HitNormal+0.4*VRand());
 	if ( (HitNormal dot RealHitNormal) < 0 )
 		HitNormal *= -0.5;
 	Velocity = GunBounce*(Velocity-2*HitNormal*(Velocity dot HitNormal));
@@ -360,13 +363,16 @@ event HitWall( Vector HitNormal, Actor Wall )
 	}
 	Velocity *= 0;
 	RotationRate *= 0;
-	OldRot = Rotation;
-	OldRot.Pitch = 0;
-	OldRot.Roll = 0;
-	SetRotation(OldRot);
+	AlignRot = Rotation;
+	AlignRot.Pitch = 0;
+	AlignRot.Roll = 0;
+	GetAxes(AlignRot,X,Y,Z);
+	X = Y cross RealHitNormal;
+	SetRotation(Rotator(X));
 	SetPhysics(PHYS_None);
-	bProjTarget = false;
-	GotoState('Ignite');
+	// No redundant state changes
+	if ( !IsInState('Ignite') )
+		GotoState('Ignite');
 }
 
 event ZoneChange( ZoneInfo NewZone )
@@ -394,7 +400,11 @@ event ZoneChange( ZoneInfo NewZone )
 event TakeDamage( int Damage, Pawn InstigatedBy, Vector HitLocation,
 	Vector Momentum, Name DamageType )
 {
+	SetPhysics(PHYS_Falling);
 	Velocity += Momentum/Mass;
+	RotationRate.Pitch = FRand()*34000*(VSize(Velocity)/200);
+	RotationRate.Yaw = FRand()*42000*(VSize(Velocity)/200);
+	RotationRate.Roll = FRand()*56000*(VSize(Velocity)/200);
 	PlaySound(HitSound[Rand(3)],SLOT_Interact,0.5);
 }
 
@@ -791,7 +801,6 @@ Sleeper:
 
 State Ignite
 {
-	ignores HitWall, TakeDamage, ZoneChange;
 
 Die:
 	Beaming = False;
@@ -873,7 +882,7 @@ defaultproperties
 	Mass=100.0
 	Buoyancy=99.0
 	bUnlit=False
-	bProjTarget=False
+	bProjTarget=True
 	bBounce=True
 	bFixedRotationDir=True
 	bGameRelevant=True
