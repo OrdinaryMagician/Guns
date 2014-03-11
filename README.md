@@ -27,4 +27,10 @@ Guns.u uses code from some older projects, such as SWWM or the Zanaveth Ultra
 Suite. Since I am still technically the author of those, I don't have to give
 anyone credit. :V
 
+The code (ONLY the code) is released under the MIT license.
+
+Assets used were either taken from unknown sources (the audio) or extracted
+from the base game data (the models). Not sure about the legality of that last
+one, though.
+
 Unreal Tournament is (C)1999 Epic Games, all rights reserved.
