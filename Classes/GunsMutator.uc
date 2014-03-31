@@ -115,7 +115,7 @@ function MutatorTakeDamage( out int ActualDamage, Pawn Victim,
 			if ( InstigatorVictim )
 				gun.Instigator = Victim;
 			else
-				gun.Instigator = InstigatedBy;			
+				gun.Instigator = InstigatedBy;
 			gun.Velocity += Momentum*HitMomentumFactor
 				+((Normal(Momentum)+VRand()*HitDeviation)
 				*RandRange(HitRandomMin,HitRandomMax));

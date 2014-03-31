@@ -154,7 +154,6 @@ function SetType( int Gun )
 		SetCollisionSize(16.0,16.0);
 		Mass = 50.0;
 		Buoyancy = 45.0;
-		//FireOffset = vect(55,0,0);
 		FireOffset = vect(0,0,0);
 		Shots = ShotsImpact;
 		FiringSpeed = 1.0;
@@ -300,8 +299,6 @@ event Tick( float deltatime )
 
 event Touch( Actor Other )
 {
-	//if ( Other.bProjTarget || (Other.bBlockActors&&Other.bBlockPlayers) )
-	//	HitWall(Normal(Location-Other.Location),Other);
 	if ( Other.IsA('GunsGun') )
 		return;
 	if ( TouchEffect )
@@ -322,13 +319,13 @@ event Touch( Actor Other )
 			TouchEffect = False;
 		}
 	}
-	if ( (Other == Owner) || (VSize(Velocity)<400) )
-		return;
 	SetPhysics(PHYS_Falling);
-	Velocity += Other.Velocity*0.2;
+	Velocity += Other.Velocity*0.4;
 	RotationRate.Pitch = FRand()*34000*(VSize(Velocity)/200);
 	RotationRate.Yaw = FRand()*42000*(VSize(Velocity)/200);
 	RotationRate.Roll = FRand()*56000*(VSize(Velocity)/200);
+	if ( (Other == Owner) || (VSize(Velocity)<400) )
+		return;
 	PlaySound(HitSound[Rand(3)],SLOT_Interact,0.5);
 	Other.TakeDamage((Mass*VSize(Velocity))/100,Instigator,Location,
 		Velocity*Mass,'Crushed');
@@ -417,7 +414,7 @@ function DoCocking()
 	else if ( GunType == 1 )
 		PlaySound(Sound'ImpactPickup',SLOT_Interact,1.0);
 	else if ( GunType == 2 )
-		PlaySound(Sound'Cocking',SLOT_Interact,1.0);		
+		PlaySound(Sound'Cocking',SLOT_Interact,1.0);
 	else if ( GunType == 3 )
 		PlaySound(Sound'GelSelect',SLOT_Interact,1.0);
 	else if ( GunType == 4 )
@@ -485,7 +482,7 @@ function FireImpact()
 	GetAxes(Rotation,X,Y,Z);
 	FLoc = Location+FireOffset.X*X+FireOffset.Y*Y+FireOffset.Z*Z;
 	GotHit = Trace(HitLocation,HitNormal,FLoc+(Vector(Rotation)
-		+VRand()*0.08)*120,FLoc,true);
+		+VRand()*0.08)*200,FLoc,true);
 	if ( GotHit == None )
 		return;
 	GotHit.TakeDamage(100,Instigator,HitLocation,80000*X,'impact');
