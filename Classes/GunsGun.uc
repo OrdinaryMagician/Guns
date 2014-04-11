@@ -126,9 +126,6 @@ event PostBeginPlay()
 	TouchEffect = False;
 	Beaming = False;
 	Shots = 0;
-	HitSound[0] = Sound'Guns.GunHit1';
-	HitSound[1] = Sound'Guns.GunHit2';
-	HitSound[2] = Sound'Guns.GunHit3';
 }
 
 function SetType( int Gun )
@@ -905,4 +902,7 @@ defaultproperties
 	ShotsDeemer=1
 	ShotsGib=3
 	LODBias=16.0
+	HitSound(0)=Sound'Guns.GunHit1'
+	HitSound(1)=Sound'Guns.GunHit2'
+	HitSound(2)=Sound'Guns.GunHit3'
 }

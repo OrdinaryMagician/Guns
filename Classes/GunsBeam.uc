@@ -11,16 +11,6 @@ class GunsBeam extends PBolt;
 var GunsGun Gun;
 var float AnimTime;
 
-function PostBeginPlay()
-{
-	Super.PostBeginPlay();
-	SpriteAnim[0] = Texture'Botpack.sbolt0';
-	SpriteAnim[1] = Texture'Botpack.sbolt1';
-	SpriteAnim[2] = Texture'Botpack.sbolt2';
-	SpriteAnim[3] = Texture'Botpack.sbolt3';
-	SpriteAnim[4] = Texture'Botpack.sbolt4';
-}
-
 function Tick( float DeltaTime )
 {
 	local Vector X,Y,Z,FLoc;
@@ -55,4 +45,9 @@ defaultproperties
 	LightHue=83
 	LightSaturation=50
 	LightRadius=5
+	SpriteAnim(0)=Texture'Botpack.sbolt0'
+	SpriteAnim(1)=Texture'Botpack.sbolt1'
+	SpriteAnim(2)=Texture'Botpack.sbolt2'
+	SpriteAnim(3)=Texture'Botpack.sbolt3'
+	SpriteAnim(4)=Texture'Botpack.sbolt4'
 }
